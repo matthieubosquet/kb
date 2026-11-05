@@ -1,0 +1,19 @@
+PREFIX : <http://example.org/namedquery/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+[
+    :name "Named Query example endpoints" ;
+    :endpoint
+        [
+            :path "describe" ;
+            :sparql "./describe/describe.sparql"^^xsd:anyURI ;
+			:frame "./describe/frame.jsonld"^^xsd:anyURI ;
+            :name "Describe resource" ;
+            :description "Gives a concise bounded description of a single identified thing, that is, all the details attached to one identifier, without traversing to details of other linked identifiers." ;
+            :parameter [
+                :name "id" ;
+                :description "The identifier of something in the system" ;
+                :example "x" ;
+            ] ;
+        ] ;
+] .

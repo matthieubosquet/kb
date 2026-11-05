@@ -1,0 +1,27 @@
+services:
+  triple-store:
+    build:
+      context: ./store
+      dockerfile: Dockerfile
+      additional_contexts:
+        config: ./store
+        data: ./data
+    image: triple-store-container
+    ports:
+      - "3030:3030"
+      # named-query shares this service's network, so its port is published here
+      - "8080:8080"
+
+  named-query:
+    build:
+      context: ./query
+      dockerfile: Dockerfile
+    image: named-query-container
+    # Share the triple store's network namespace so that localhost:3030 reaches
+    # Fuseki both from inside this container (server-side queries) and from the
+    # browser (the /sparql editor uses this same URL client-side).
+    network_mode: service:triple-store
+    environment:
+      NamedQuery__SparqlEndpoint: http://localhost:3030/sparql
+    depends_on:
+      - triple-store
