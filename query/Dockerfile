@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 ARG DOTNET_VERSION=10.0
 ARG NAMEDQUERY_VERSION=0.1.0-alpha.2
 

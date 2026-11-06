@@ -13,7 +13,7 @@ ARG JAVA_MINIMAL=/opt/java-minimal
 
 
 ## ---- Stage: download Fuseki JAR
-FROM alpine:${ALPINE_VERSION} AS fuseki-download
+FROM docker.io/library/alpine:${ALPINE_VERSION} AS fuseki-download
 
 ARG JENA_VERSION
 ARG FUSEKI_DIR
@@ -31,7 +31,7 @@ RUN wget -q -O "$FUSEKI_JAR" "$FUSEKI_JAR_URL" && \
 
 
 ## ---- Stage: build minimal Java runtime
-FROM eclipse-temurin:${JAVA_VERSION}-alpine AS jre
+FROM docker.io/library/eclipse-temurin:${JAVA_VERSION}-alpine AS jre
 
 ARG JAVA_MINIMAL
 ARG FUSEKI_DIR
@@ -86,7 +86,7 @@ RUN "$JAVA_HOME/bin/java" --add-modules jdk.incubator.vector \
 
 
 ## ---- Stage: runtime
-FROM alpine:${ALPINE_VERSION}
+FROM docker.io/library/alpine:${ALPINE_VERSION}
 
 ARG JENA_VERSION
 ARG JAVA_MINIMAL
