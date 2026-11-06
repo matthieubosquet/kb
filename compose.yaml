@@ -25,3 +25,11 @@ services:
       NamedQuery__SparqlEndpoint: http://localhost:3030/sparql
     depends_on:
       - triple-store
+
+  redirect:
+    build:
+      context: ./redirect
+      dockerfile: Dockerfile
+    image: redirect-container
+    ports:
+      - "4040:4040"
