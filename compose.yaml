@@ -3,13 +3,20 @@ services:
     build:
       context: ./store
       dockerfile: Dockerfile
+      args:
+        GRAPH_BASE: https://ns.example.org/
+        # Named graphs left out of inference and of the default graph (an entry also covers the graphs under it)
+        INFERENCE_EXCLUDE: owl rdf rdfs xsd shacl
+        # Full-text search (text:query) with a Lucene index: true or false
+        FULL_TEXT: "true"
       additional_contexts:
         config: ./store
         data: ./data
+        ontology: ./ontology
+        shapes: ./shapes
     image: triple-store-container
     ports:
       - "3030:3030"
-      # named-query shares this service's network, so its port is published here
       - "8080:8080"
 
   named-query:
@@ -17,12 +24,9 @@ services:
       context: ./query
       dockerfile: Dockerfile
     image: named-query-container
-    # Share the triple store's network namespace so that localhost:3030 reaches
-    # Fuseki both from inside this container (server-side queries) and from the
-    # browser (the /sparql editor uses this same URL client-side).
     network_mode: service:triple-store
     environment:
-      NamedQuery__SparqlEndpoint: http://localhost:3030/sparql
+      NamedQuery__SparqlEndpoint: http://localhost:3030/
     depends_on:
       - triple-store
 

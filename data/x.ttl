@@ -1,3 +1,8 @@
 BASE <https://id.example.org/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
-<x> <y> <z>, "z" .
+<x> 
+    a foaf:Person ;
+    <name> "Bob";
+    <friend> <z>, <z2> ;
+    <blurp> <u> .

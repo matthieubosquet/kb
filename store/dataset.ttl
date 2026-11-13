@@ -1,0 +1,46 @@
+PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX tdb2: <http://jena.apache.org/2016/tdb#>
+
+# The dataset behind full-text search (text.ttl) and the Fuseki service
+# (config.ttl). Kept in its own file so the build can also open it on its own
+# (for SHACL validation); the build appends it to config.ttl for Fuseki.
+
+# The default graph is the inferred view: OWL micro reasoning over the union
+# of the default graph and every named graph that is not excluded.
+# The build appends one ja:namedGraph per named graph (all queryable with GRAPH).
+<urn:kb:dataset>
+    a ja:RDFDataset ;
+
+    ja:defaultGraph [
+        # OWL micro inferencing
+        a ja:InfModel ;
+        ja:reasoner [
+            ja:reasonerURL <http://jena.hpl.hp.com/2003/OWLMicroFBRuleReasoner>
+        ] ;
+
+        ja:baseModel <urn:kb:inference-base> ;
+    ] ;
+
+    # An always-empty TDB2 graph. Fuseki only starts a database transaction
+    # through graphs it can see directly in the dataset, not ones nested in the
+    # inference union, so this keeps reads transactional even when no named
+    # graphs are loaded.
+    ja:namedGraph [
+        ja:graphName <urn:kb:transaction-anchor> ;
+        ja:graph [
+            a tdb2:GraphTDB2 ;
+            tdb2:location "./db" ;
+            tdb2:graphName <urn:kb:transaction-anchor> ;
+        ] ;
+    ] .
+
+# The graphs the reasoner sees. The build appends one ja:subModel per named
+# graph not listed in the INFERENCE_EXCLUDE build argument.
+<urn:kb:inference-base>
+    a ja:UnionModel ;
+
+    # Files placed directly in data/
+    ja:subModel [
+        a tdb2:GraphTDB2 ;
+        tdb2:location "./db" ;
+    ] .
